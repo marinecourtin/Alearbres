@@ -30,7 +30,7 @@ class DependencyTree(object):
 		a list of nodes that are part of the tree and can act as governors for floating_nodes
 	
 	Methods
-	----------
+	-------
 	add_edge()
 		randomly add an edge to the dependency tree
 	parse()
@@ -158,6 +158,29 @@ class DependencyTree(object):
 		c_tree = conll3.Tree(tree)
 		return c_tree
 
+def build_random_forest(specs):
+	"""
+	Build random trees with specified sizes
+
+	Parameters
+	----------
+	specs : dict
+		Specify the number of trees of each size
+		example : {3:10, 4:20} will give 10 trees of size 3 and 20 trees of size 4
+
+	Returns
+	-------
+	forest : list
+		a list of Tree objects, randomly parsed and that correspond to the specs.
+	"""
+	trees = list()
+	for size, nb in specs.items():
+		for i in range(nb):
+			t = DependencyTree(size)
+			tree = t.toTree()
+			trees += [tree]
+	returns trees
+
 
 
 if __name__ == "__main__":
@@ -171,3 +194,8 @@ if __name__ == "__main__":
 	tree = t.toTree()
 	# write it to a file
 	conll3.trees2conllFile([tree], "sample_random-trees.conllu")
+
+	## random forest
+	specs = {3:10, 4:20}
+	forest = build_random_forest(specs)
+	conll3.trees2conllFile(forest, "sample_random-forest.conllu")

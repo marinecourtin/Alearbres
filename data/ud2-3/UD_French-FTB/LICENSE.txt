@@ -1,0 +1,4 @@
+The treebank annotations (anything else than word forms and their respective
+lemmas) are licensed under Lesser General Public License For Linguistic Resources
+
+The complete license text is available at: https://spdx.org/licenses/LGPLLR

@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<treebank>
+  <!-- tokens means "surface tokens", e.g. Spanish "vámonos" counts as one token
+       words means "syntactic words", e.g. Spanish "vámonos" is split to two words, "vamos" and "nos"
+       fused is the number of tokens that are split to two or more syntactic words
+       The words and fused elements can be omitted if no token is split to smaller syntactic words. -->
+  <size>
+    <total><sentences>1000</sentences><tokens>24138</tokens><words>24734</words><fused>596</fused></total>
+  </size>
+  <lemmas unique="4" /><!-- le, de, à, lequel -->
+  <forms unique="5956" /><!-- de, ,, ., le, la, les, à, et, l', en, a, un, est, une, que -->
+  <fusions unique="5" /><!-- du, des, au, aux, desquelles -->
+  <!-- Statistics of universal POS tags. The comments show the most frequent lemmas. -->
+  <tags unique="16">
+    <tag name="ADJ">1607</tag><!-- _ -->
+    <tag name="ADP">3918</tag><!-- _, de, à -->
+    <tag name="ADV">1035</tag><!-- _ -->
+    <tag name="AUX">274</tag><!-- _ -->
+    <tag name="CCONJ">562</tag><!-- _ -->
+    <tag name="DET">3630</tag><!-- _, le -->
+    <tag name="NOUN">4804</tag><!-- _ -->
+    <tag name="NUM">458</tag><!-- _ -->
+    <tag name="PART">9</tag><!-- _ -->
+    <tag name="PRON">1336</tag><!-- _, lequel -->
+    <tag name="PROPN">1241</tag><!-- _ -->
+    <tag name="PUNCT">2548</tag><!-- _ -->
+    <tag name="SCONJ">206</tag><!-- _ -->
+    <tag name="SYM">34</tag><!-- _ -->
+    <tag name="VERB">3024</tag><!-- _ -->
+    <tag name="X">48</tag><!-- _ -->
+  </tags>
+  <!-- Statistics of features and values. The comments show the most frequent word forms. -->
+  <feats unique="21">
+    <feat name="Foreign" value="Yes" upos="X">18</feat><!-- Este, Greco, Mei, Mundo, Nostrum, Ping, Píanó, Rasa, Rós, Skylark -->
+    <feat name="Gender" value="Fem" upos="ADJ,ADP,AUX,DET,NOUN,PRON,PROPN,VERB">5587</feat><!-- la, les, une, l', l’, sa, des, qui, cette, elle -->
+    <feat name="Gender" value="Masc" upos="ADJ,ADP,AUX,DET,NOUN,PRON,PROPN,VERB">7245</feat><!-- le, les, un, il, l', été, des, qui, l’, son -->
+    <feat name="Mood" value="Cnd" upos="AUX,VERB">75</feat><!-- pourrait, aurait, pourraient, serait, devrait, auraient, devraient, irait, aiderait, autoriserait -->
+    <feat name="Mood" value="Imp" upos="VERB">7</feat><!-- Disons, Don’t, Knuck, Laisse, Tiens, Voilà -->
+    <feat name="Mood" value="Ind" upos="AUX,VERB">1670</feat><!-- a, est, ont, sont, était, avait, fut, peut, avaient, étaient -->
+    <feat name="Mood" value="Sub" upos="AUX,VERB">30</feat><!-- aient, soit, ait, puisse, soient, aperçoive, chante, donne, décide, fasse -->
+    <feat name="Number" value="Plur" upos="ADJ,ADP,AUX,DET,NOUN,PRON,PROPN,VERB">3779</feat><!-- les, des, ont, sont, qui, ils, ses, nous, se, années -->
+    <feat name="Number" value="Sing" upos="ADJ,ADP,AUX,DET,NOUN,PRON,PROPN,VERB">11375</feat><!-- le, la, l', a, un, est, une, il, l’, été -->
+    <feat name="Number[psor]" value="Plur" upos="PRON">76</feat><!-- leur, leurs, notre, nos, votre, vos -->
+    <feat name="Number[psor]" value="Sing" upos="PRON">202</feat><!-- son, sa, ses, mon, My, ma, mes, sar, sienne -->
+    <feat name="Person" value="1" upos="AUX,PRON,VERB">187</feat><!-- je, nous, ai, notre, nos, avons, j’, devons, j', me -->
+    <feat name="Person" value="2" upos="PRON,VERB">38</feat><!-- vous, votre, You, avez, devez, toi, 'Ya, Buck, Don’t, Knew -->
+    <feat name="Person" value="3" upos="AUX,PRON,VERB">2568</feat><!-- a, est, il, ont, se, son, sa, sont, était, elle -->
+    <feat name="Polarity" value="Neg" upos="ADV">222</feat><!-- pas, ne, n', n’, plus, jamais, non, t -->
+    <feat name="PronType" value="Prs" upos="PRON">278</feat><!-- son, sa, ses, leur, leurs, notre, nos, mon, votre, My -->
+    <feat name="Tense" value="Fut" upos="AUX,VERB">33</feat><!-- sera, aura, devra, pourront, seront, accueillera, assisteront, augmentera, commercialiseront, concentrerons -->
+    <feat name="Tense" value="Imp" upos="AUX,VERB">294</feat><!-- était, avait, avaient, étaient, pouvait, comprenait, faisait, pensait, considérait, allait -->
+    <feat name="Tense" value="Past" upos="AUX,VERB">133</feat><!-- fut, furent, devint, prit, eut, commença, dura, permit, put, retourna -->
+    <feat name="Tense" value="Pres" upos="AUX,VERB">1322</feat><!-- a, est, ont, sont, peut, pourrait, peuvent, ai, aurait, pourraient -->
+    <feat name="VerbForm" value="Part" upos="AUX,VERB">198</feat><!-- concernant, ayant, dirigée, permettant, pouvant, réalisé, dirigés, dépassant, faisant, fondé -->
+  </feats>
+  <!-- Statistics of universal dependency relations. -->
+  <deps unique="42">
+    <dep name="acl">28</dep>
+    <dep name="acl:relcl">226</dep>
+    <dep name="advcl">219</dep>
+    <dep name="advmod">1002</dep>
+    <dep name="amod">1392</dep>
+    <dep name="appos">275</dep>
+    <dep name="aux">569</dep>
+    <dep name="aux:pass">227</dep>
+    <dep name="case">3428</dep>
+    <dep name="cc">545</dep>
+    <dep name="ccomp">305</dep>
+    <dep name="compound">78</dep>
+    <dep name="conj">653</dep>
+    <dep name="cop">226</dep>
+    <dep name="csubj">23</dep>
+    <dep name="csubj:pass">1</dep>
+    <dep name="dep">9</dep>
+    <dep name="det">3589</dep>
+    <dep name="det:predet">20</dep>
+    <dep name="discourse">30</dep>
+    <dep name="dislocated">3</dep>
+    <dep name="expl">85</dep>
+    <dep name="fixed">452</dep>
+    <dep name="flat">17</dep>
+    <dep name="flat:name">227</dep>
+    <dep name="goeswith">3</dep>
+    <dep name="iobj">36</dep>
+    <dep name="mark">450</dep>
+    <dep name="nmod">1820</dep>
+    <dep name="nmod:poss">277</dep>
+    <dep name="nsubj">1425</dep>
+    <dep name="nsubj:pass">200</dep>
+    <dep name="nummod">243</dep>
+    <dep name="obj">1095</dep>
+    <dep name="obl">1404</dep>
+    <dep name="obl:tmod">80</dep>
+    <dep name="orphan">4</dep>
+    <dep name="parataxis">106</dep>
+    <dep name="punct">2553</dep>
+    <dep name="root">1000</dep>
+    <dep name="vocative">1</dep>
+    <dep name="xcomp">408</dep>
+  </deps>
+</treebank>

@@ -164,7 +164,7 @@ if __name__ == "__main__":
 
 	## small example
 	# create a random tree with 5 nodes
-	t = DependencyTree(5)
+	t = DependencyTree(5, root=1)
 	# visualize it
 	t.view()
 	# transform it to conll3 format

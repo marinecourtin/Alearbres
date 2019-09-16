@@ -1,11 +1,216 @@
+"""This script is used to create random projective linearisations for dependency trees"""
+
+
 import random
 import numpy as np
-import conll3
-from conll3 import  Tree
 import copy
 
+# local imports
+import conll3
+from conll3 import  Tree
 
-conll = """1	le	le	_	_	_	3	det	_	_
+
+
+
+
+
+def get_kids(tree, num):
+	"""
+	Gives the list of dependent nodes of a govenor.
+
+	Parameters
+	----------
+	tree : Tree
+		a dependency Tree in dict format
+	num : int
+		the id of the governor nodes
+
+	Returns
+	----------
+	kids : list
+		a list of ids of the dependent nodes
+	"""
+	kids = list(tree[num]["kids"])
+	return kids
+
+def randomly_select_dependents(deps):
+	"""
+	Gives the order in which dependents will be processed
+
+	Parameters
+	----------
+	deps: list
+		a list of dependent nodes
+
+	Updates
+	----------
+	deps : list
+		a randomly ordered list of dependent nodes
+	"""
+	random.shuffle(deps)
+
+def randomly_select_direction(tree, linearisation, node, gov_initial):
+	"""
+	Gives the directions in which dependent nodes will be linearised.
+
+	True: left
+	False: right
+
+	Parameters
+	----------
+	tree: Tree
+		a dependency Tree in dict format
+	linearisation: list
+		a list of nodes in the order of the current linearisation
+	node: int
+		the id of the node to linearize
+	gov_initial: float
+		the desired probability for governor-initial dependency links
+
+	Returns
+	----------
+	linearisation: list
+		a list of nodes in the order of the current linearisation, where
+		the current node has been placed.
+
+	Example
+	----------
+	deps = [2,0,1]
+	node = 3 (kid of 2)
+	the random components returns False
+	linearisation = [2,3,0,1] -> 3 is placed on the right of its governor
+	"""
+	left = np.random.rand() > gov_initial # True:left / False:right
+
+	gov = list(tree[node]["gov"])[0] # grab the governor of the current node
+	gov_rank = linearisation.index(gov) # get its index in the linearisation
+
+	# insert node in list next to its governor
+	if left:
+		linearisation.insert(gov_rank, node) # insert the node just before its governor
+	else:
+		linearisation.insert(gov_rank+1, node) # insert the node just after its governor
+
+	return linearisation
+
+
+
+def create_random_pj_linearisation(tree, gov_initial=0.5):
+	""" 
+	Creates a random projective linearisation (main function).
+
+	Parameters
+	----------
+	tree: Tree
+		a dependency Tree in dict format
+	gov_initial : float
+		the desired probability for governor-initial dependency links
+
+	Returns
+	----------
+	randomly_linearised_tree : Tree
+		a dependency Tree in dict format where the order of nodes
+		has been randomized.
+	----------
+
+	"""
+	tree_for_rewrite = copy.deepcopy(tree)
+	tree.addkids(tree)
+	num_root = tree.get_root() # grab the root
+	linearisation = [num_root] # initialize the linearisation
+
+	# produce a random projective linearisation
+	reorder_kids(tree, num_root, linearisation, gov_initial)
+
+	# reorder the nodes according to the linearisation
+	randomly_linearised_tree = rewrite_tree(tree_for_rewrite, linearisation)
+	return randomly_linearised_tree
+
+
+def reorder_kids(tree,node, linearisation, gov_initial):
+	"""
+	Updates the linearisation of the tree by recursively placing children nodes
+	around their governor node.
+
+	The reordering is constrained to produce projective trees.
+
+	Parameters
+	----------
+	tree: Tree
+		a dependency Tree in dict format
+	gov_initial : float
+		the desired probability for governor-initial dependency links
+	"""
+	all_kids = get_kids(tree, node)
+	if not all_kids: # node is a leaf
+		pass
+	else:
+		# randomize the order of kids in all_kids
+		randomly_select_dependents(all_kids)
+
+		# apply the same procedure to all the subkids
+		for kid in all_kids:
+			randomly_select_direction(tree, linearisation, kid, gov_initial)
+			reorder_kids(tree,kid, linearisation, gov_initial) # recursive call
+
+def create_random_nonpj_linearisation(tree):
+	"""
+	Creates a random linearisation with no projectivity constraints.
+
+	Parameters
+	----------
+	tree: Tree
+		a dependency Tree in dict format
+
+	Returns
+	----------
+	randomly_linearised_tree : Tree
+		a dependency Tree in dict format where the order of nodes
+		has been randomized.
+	"""
+	tree_for_rewrite = copy.deepcopy(tree)
+	nodes = list(tree.keys())
+	random.shuffle(nodes)
+	random_tree = rewrite_tree(tree, nodes)
+	return random_tree
+
+
+
+def rewrite_tree(tree, li):
+	"""
+	Rewrites a Tree according to a new linearisation
+
+	Parameters
+	----------
+	tree: Tree
+		a dependency Tree in dict format
+	li : list
+		linearisation to reproduce
+
+	Returns
+	----------
+	tree: Tree
+		a dependency Tree in dict format, where nodes have been reordered
+	"""
+	new_tree = Tree()
+
+	for i, node in tree.items():
+		new_node = tree[li[i-1]] # grab the node from the original tree
+		new_node["id"] = i # replace its old id by its position in the linearisation
+		gi = list(new_node["gov"].keys())[0]
+
+		if gi != 0: # this node is not the root
+			new_gi = li.index(gi)+1 # update the governor id
+			new_node["gov"] = {new_gi: new_node["gov"][gi]}
+		new_tree[i] = new_node # add this node in the new tree
+
+	return new_tree
+
+
+
+if __name__ == "__main__":
+
+	conll = """1	le	le	_	_	_	3	det	_	_
 2	petit	petit	_	_	_	3	amod	_	_
 3	chat	chat	_	_	_	4	subj	_	_
 4	dort	dort	_	_	_	0	root	_	_
@@ -14,7 +219,7 @@ conll = """1	le	le	_	_	_	3	det	_	_
 """
 
 
-conll2 ="""# sent_id = annodis.er_00022
+	conll2 ="""# sent_id = annodis.er_00022
 # text = Ouverture tous les jours sauf le lundi de 14h30 à 18h.
 1	Ouverture	ouverture	NOUN	_	Gender=Fem|Number=Sing	0	root	_	_
 2	tous	tout	ADJ	_	Gender=Masc|Number=Plur	4	amod	_	_
@@ -33,155 +238,11 @@ conll2 ="""# sent_id = annodis.er_00022
 15	.	.	PUNCT	_	_	1	punct	_	_
 """
 
-def is_root(node):
-    if 0 in node["gov"]:
-        return True
-    else:
-        return False
+	## small example
+	tree = conll3.conll2tree(conll) # str -> Tree
+	gov_initial=0.5
+	random_tree = create_random_pj_linearisation(tree, gov_initial=gov_initial) # random linearisation + projective
+	r_nonproj = create_random_nonpj_linearisation(tree) # random linearisation
 
-def get_root(tree):
-    """
-    
-    """
-    for num in tree:
-        node = tree[num]
-        if is_root(node):
-            return num
-            # return list(node["kids"].keys())
-
-def get_kids(tree, num):
-    """
-    @args:
-        - Tree()
-        - Int : id of the parent node
-    @out:
-        - List() : list of ids of kid nodes
-    """
-    kids = list(tree[num]["kids"])
-    return kids
-
-def randomly_select_dep(deps):
-	"""
-	@args :
-		- List() : list of dep ; [1,2]
-	@out :
-		- List() : list of dep in the order that they will be processed; [2,1]
-    
-	Note:
-	il faut garder l'ordre en memoire pour le reutiliser quand on traite les dependants
-	"""
-	random.shuffle(deps)
-
-def randomly_select_order(tree, linearisation, node, gov_initial):
-    """
-    @args:
-        - Tree()
-        - List() : list of dep ; [2,0,1]
-        - Int : node ; 3
-
-    @out :
-        - List() ; [2,3,0,1] 3 (kid of 2) was placed on the right of its gov
-    """
-    # True:left ; False:right
-    left = np.random.rand() > gov_initial
-
-    # get gov of node
-    gov = list(tree[node]["gov"])[0]
-    gov_rank = linearisation.index(gov)
-
-    # insert node in list next to its gov
-    if left:
-        # print("left")
-        linearisation.insert(gov_rank, node)
-    else:
-        # print("right")
-        linearisation.insert(gov_rank+1, node)
-    
-    # print("linearisation ", linearisation)
-    return linearisation
-
-def random_tree():
-    """traitement principal
-    :return:
-    """
-    pass
-
-
-def random_tree1(tree, gov_initial=0.5):
-    """ traitement principal
-    tree: Tree(), float (% of gov_initial dependency links)
-    :return: 
-    """
-    # TODO: 1. c'est pas exhaustif  2. (pas tres sure)
-    # print("main function")
-    tree_for_rewrite = copy.deepcopy(tree)
-    tree.addkids(tree)
-    num_root = get_root(tree)
-    # print("root ", num_root)
-    linearisation = [num_root]
-    recursif_kids(tree, num_root, linearisation, gov_initial)
-    # print(rewrite_tree(tree_for_rewrite, linearisation))
-    return rewrite_tree(tree_for_rewrite, linearisation)
-
-
-def recursif_kids(tree,node, linearisation, gov_initial):
-    all_kids = get_kids(tree, node)
-    # print("all_kids", all_kids)
-    randomly_select_dep(all_kids)
-    # print("all kids randomized order ", all_kids)
-    if all_kids:
-        for kid in all_kids:
-            randomly_select_order(tree, linearisation, kid, gov_initial)
-            recursif_kids(tree,kid, linearisation, gov_initial)
-
-def rewrite_tree(tree, li):
-    """
-    takes a Tree() and a list() which represent the new linearisation
-    output : new Tree(), a conllu string
-    """
-    # print(tree)
-    new_tree = Tree()
-    for i, node in tree.items():
-        """ take tree node and change id and gov"""
-        new_node = tree[li[i-1]]
-        # print(new_node)
-        """ change id """
-        new_node["id"] = i
-        gi = list(new_node["gov"].keys())[0]
-        if gi != 0:
-            """change governor info"""
-            new_gi = li.index(gi)+1
-            # print(new_gi)
-            new_node["gov"] = {new_gi: new_node["gov"][gi]}
-        new_tree[i] = new_node
-    # print("updated tree %s" % new_tree)
-    # text = new_tree.conllu()
-    # del(tree)
-    # del(new_tree)
-    # return text
-    return new_tree
-
-
-
-if __name__ == "__main__":
-    tree = conll3.conll2tree(conll2)
-    # tree = conll3.conll2tree(conll)
-    random_trees = list()
-    gov_initial=0.8
-    for x in range(100):
-
-        # chunxiao
-        # tree_for_random = copy.deepcopy(tree)
-        # random_tree1(tree_for_random)
-        # del(tree_for_random)
-
-        # marine
-        random_tree = random_tree1(tree, gov_initial=gov_initial)
-        random_trees.append(random_tree)
-    conll3.trees2conllFile(random_trees, "random-projective-trees_"+str(gov_initial)+"_gov-initial.conllu")
-
-
-    # making a random sequoia
-    
-    # on recupere les arbres
-    # on linearise
+	trees = [random_tree, r_nonproj]
+	conll3.trees2conllFile(trees, "sample_randomly-linearised-trees.conllu") # writes the conll to a file

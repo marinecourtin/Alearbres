@@ -88,7 +88,7 @@ def optimal_linearization(tree):
 
 			# find where this govenor is in the linearization
 			idgov_index = linearization.index(idgov)
-			print("gov is ", idgov, " with index in linearization ", idgov_index, "linearisation is ", linearization, " first direct is ", first_direction)
+			# print("gov is ", idgov, " with index in linearization ", idgov_index, "linearisation is ", linearization, " first direct is ", first_direction)
 
 
 			if first_direction == "Right":
@@ -129,9 +129,10 @@ if __name__ == "__main__":
 
 	# find the optimal sequence of nodes
 	linearization = optimal_linearization(tree)
+	print(linearization)
 
 	# rewrite the conll according to the new linearisation
 	new_tree = random_linearisation.rewrite_tree(tree, linearization)
-	
+	print(new_tree.conllu())
 	# write the tree(s) to a file
 	conll3.trees2conllFile([new_tree], "sample-dlmtree.conllu")

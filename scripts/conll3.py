@@ -185,6 +185,7 @@ class Tree(dict):
 			is_root = True
 		else:
 			is_root = False
+		return is_root
 
 	def get_root(self):
 		"""

@@ -2,6 +2,12 @@
 
 Alearbres<sup>[1](#myfootnote1)</sup> is a collection of scripts that is intended to facilitate the generation of random dependency trees.
 
+You can used Alearbres to generate artificial treebanks with various constraints :
++ random structures
++ random (projective and non-projective) linearisations
++ random linearisations that optimize for Dependency Length Minimization
+
+
 # Main functionalities
 
 
@@ -56,6 +62,7 @@ conll3.trees2conllFile(trees, "sample_randomly-linearised-trees.conllu") # write
 
 ## Optimally reordering nodes in a dependency tree with respect to Dependency Length Minimization
 
+
 ```python
 conll = """1	le	le	_	_	_	3	det	_	_
 2	petit	petit	_	_	_	3	amod	_	_
@@ -84,6 +91,8 @@ conll = """1	le	le	_	_	_	3	det	_	_
 5       chat    chat    _       _       _       4       subj    _       _
 6       petit   petit   _       _       _       5       amod    _       _
 ```
+
+Note that this method only generate projective edges.
 
 # Get the source
 

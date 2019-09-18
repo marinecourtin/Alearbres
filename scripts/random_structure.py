@@ -58,6 +58,13 @@ class DependencyTree(object):
 		self.potential_governors = [self.root]
 		self.parse()
 
+	def __repr__(self):
+		representation = "Tree\n  Edges: ["
+		for a,b in self.edges:
+			representation += "({}, {}), ".format(a,b)
+		representation = representation[:-2]+"]"
+		return representation
+
 	def add_edge(self):
 		"""
 		Randomly add an edge to the dependency tree
@@ -188,14 +195,15 @@ if __name__ == "__main__":
 	## small example
 	# create a random tree with 5 nodes
 	t = DependencyTree(5, root=1)
+	print(t)
 	# visualize it
-	t.view()
-	# transform it to conll3 format
-	tree = t.toTree()
-	# write it to a file
-	conll3.trees2conllFile([tree], "sample_random-trees.conllu")
+	# t.view()
+	# # transform it to conll3 format
+	# tree = t.toTree()
+	# # write it to a file
+	# conll3.trees2conllFile([tree], "sample_random-trees.conllu")
 
-	## random forest
-	specs = {3:10, 4:20}
-	forest = build_random_forest(specs)
-	conll3.trees2conllFile(forest, "sample_random-forest.conllu")
+	# ## random forest
+	# specs = {3:10, 4:20}
+	# forest = build_random_forest(specs)
+	# conll3.trees2conllFile(forest, "sample_random-forest.conllu")

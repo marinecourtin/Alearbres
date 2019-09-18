@@ -76,4 +76,6 @@ git clone https://github.com/marinecourtin/Alearbres.git
 
 
 
+_______________
+
 <a name="myfootnote1">1</a> : **Alearbres** is a mashup of *aléatoire* and *arbres* (random trees in French)

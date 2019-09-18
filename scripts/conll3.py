@@ -1,3 +1,8 @@
+"""
+This script is used to manipulate dependency trees stored in conllu format
+"""
+
+
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
@@ -29,6 +34,30 @@ import collections, re
 
 
 class Tree(dict):
+	"""
+	The main class used to store dependency structures in a dict-like format.
+
+	Attributes
+	----------
+	sentencefeatures : dict
+		Stores the sentencefeatures if they exist (text, translation, sent_id...)
+		e.g {"text": "Elle est très syntaxe", "translation" : "She's very into syntax"}
+	words : list
+		Stores the sentence as a list of tokens
+	
+	Methods
+	-------
+	sentence()
+		Concatenates the tokens to form the sentence.
+	conllu()
+		Creates the conllu string corresponding to the tree.
+	addkids()
+		Adds to each node a dictionary with their dependents.
+		e.g : {3:nsubj, 4:obj}
+	get_root()
+		Finds the root of the dependency tree.
+	"""
+
 	def __init__(self, *args, **kwargs):
 		self.update(*args, **kwargs)
 		self.sentencefeatures = {}
@@ -56,11 +85,38 @@ class Tree(dict):
 			self[k] = v
 
 	def sentence(self):
+		"""
+		Creates the string representation of the sentence.
+
+		Parameters
+		----------
+		self : Tree
+			the dependency tree in dict format.
+		
+		Returns
+		-------
+		treestring : str
+			the sentence as a string.
+		"""
+		# TODO take into account SpaceAfter features
 		if self.words==[]:
 			self.words = [self[i].get("t","") for i in sorted(self)]
 			return u" ".join(self.words)
 
 	def conllu(self):
+		"""
+		Creates the conllu string corresponding to the tree.
+
+		Parameters
+		----------
+		self : Tree
+			the dependency tree in dict format.
+		
+		Returns
+		-------
+		treestring : str
+			the tree in conllu format.
+		"""
 		treestring = ""
 		if self.sentencefeatures:
 			for stftkey in sorted(self.sentencefeatures):
@@ -85,7 +141,21 @@ class Tree(dict):
 
 	def addkids(self, exclude=[]):
 		"""
-		adds dictionary to each node: 'kids': {1: 'dobj', 2: 'aux', 3: 'nsubj', 5: 'prep', 9: 'punct'}
+		Adds to each node in the tree a dictionary with their dependents.
+
+		Parameters
+		----------
+		self : Tree
+			the dependency tree in dict format.
+		exclude : list, optional
+			a list of syntactic functions to exclude.
+			e.g exclude = ["punct", "fixed", "goeswith"]
+
+		Returns
+		-------
+		self : Tree
+			the updated dependency tree, with indications on each node's
+			dependents.
 		"""
 		for i in self:
 			self[i]['kids'] = {}
@@ -97,14 +167,38 @@ class Tree(dict):
 				else: self.rootnode=i
 
 	def is_root(self, node):
+		"""
+		Checks whether a node is the root.
+
+		Parameters
+		----------
+		self : Tree
+			the dependency tree in dict format.
+		node : dict
+			the dictionary of the node being checked.
+
+		Returns
+		-------
+		is_root : Boolean
+		"""
 		if 0 in node["gov"]:
-			return True
+			is_root = True
 		else:
-			return False
+			is_root = False
 
 	def get_root(self):
 		"""
-		
+		Find the root of the dependency tree.
+
+		Parameters
+		----------
+		self : Tree
+			the dependency tree in dict format.
+
+		Returns
+		-------
+		num : int
+			the id of the root node.
 		"""
 		for num in self:
 			node = self.get(num)
@@ -125,6 +219,19 @@ def update(d, u):
 
 
 def conll2tree(conllstring):
+	"""
+	Creates a dictionary representation of the dependency tree in conllu format.
+
+	Parameters
+	----------
+	conllstring : str
+		the conllu string for a dependency tree
+	
+	Returns
+	-------
+	tree : Tree
+		the dependency tree in dict format.
+	"""
 	tree=Tree()
 	nr=1
 	skipuntil=0 # only used to get the right "words" sequence, doesn't touch the actual tokens
@@ -143,13 +250,13 @@ def conll2tree(conllstring):
 
 			if nrCells in [4,10,12, 13,14]:
 
-				# if nrCells == 4: # malt!
-				# 	t, tag, head, rel = cells
-				# 	if head=="_": head=-1
-				# 	else:head = int(head)
-				# 	newf={'id':nr,'t': t, 'tag': tag,'gov':{head: rel}}
-				# 	tree[nr]=update(tree.get(nr,{}), newf)
-				# 	nr+=1
+				if nrCells == 4: # malt!
+					t, tag, head, rel = cells
+					if head=="_": head=-1
+					else:head = int(head)
+					newf={'id':nr,'t': t, 'tag': tag,'gov':{head: rel}}
+					tree[nr]=update(tree.get(nr,{}), newf)
+					nr+=1
 
 				if nrCells == 10: # standard conll 10 or conllu
 					nr, t, lemma , tag, xpos, features, head, rel, edeps, misc = cells
@@ -237,6 +344,26 @@ def conll2tree(conllstring):
 
 
 def conllFile2trees(path, encoding="utf-8"):
+	"""
+	Creates a list of trees from a conll file
+
+	The file is segmented into blocks of text for every dependency tree
+	and each tree is stored as a dictionary using the conll2tree() function.
+
+	The inverse function is trees2conllFile()
+
+	Parameters
+	----------
+	path : str
+		path to the conll file that we want to read.
+	encoding : str
+		encoding of the file, default is utf-8.
+
+	Returns
+	-------
+	trees : list
+		a list of trees in dict format.
+	"""
 	trees=[]
 	with open(path) as f:
 		conlltext=""
@@ -258,6 +385,28 @@ def conllFile2trees(path, encoding="utf-8"):
 
 
 def trees2conllFile(trees, outfile, sentencefeatures=True, columns="u"): # changed default from 10 to u!
+	"""
+	Creates a conll file from a list of trees.
+
+	Each tree in dict format is transformed into a string using the
+	conllu() method.
+
+	The inverse function is conllFile2trees().
+
+	Parameters
+	----------
+	trees : list
+		a list of trees in dict format.
+	outfile : str
+		the name of the file where we want to store the conll
+	sentencefeatures : boolean, optional
+		should the conll representation include sentencefeatures, by default
+		this is True.
+		e.g # text = xxxx\n# sent_id = xxxxx
+	columns : str/int
+		Desired output format, by default this is "u" which stands for conllu,
+		a 10 column format.
+	"""
 	with open(outfile,"w") as f:
 		for tree in trees:
 			if columns=="u": # conllu format
@@ -297,57 +446,3 @@ def trees2conllFile(trees, outfile, sentencefeatures=True, columns="u"): # chang
 							if lemma == "_": lemma = node.get("t","_")
 							treestring+="\t".join([str(i), node.get("t","_"), lemma, lemma, node.get("tag","_"), node.get("tag","_"), node.get("morph","_"), node.get("morph","_"), str(govid),str(govid),func,func,"_","_"])+"\n"
 			f.write(treestring+"\n")
-
-
-def sentences2emptyConllFile(infile, outfile):
-	"""
-	transforms a list of sentences into conll format without trees
-	"""
-	inf = open(infile)
-	with open(outfile, "w") as outf:
-		counter=0
-		for line in inf:
-			line=line.strip()
-			if line:
-				for i,word in enumerate(line.split()):
-					outf.write("\t".join([str(i+1),word,word,"_","_","_","-1","_","_","_"])+"\n")
-				outf.write("\n")
-				counter+=1
-		inf.close()
-	print(counter, "sentences")
-
-def get_weight_kids(tree, node, weights):
-	"""
-	called inside optimal_linearization(), recursive
-
-	@args:
-	- Tree()
-	- node (root node for the first call)
-	- dict() (empty for initialization)
-
-	recursive function, returns a dictionary with the weights (number of descendants, direct and indirect) of each node
-	"""
-	kids = node.get("kids").keys()
-	if kids:
-		weights[node["id"]] = 0
-		for k in kids:
-			weights[node["id"]] +=1
-			weights = get_weight_kids(tree, tree[k], weights)
-			# print(node["id"], "current child", k, "weight of child", weights[k], "new node weight", weights[node["id"]]+weights[k])
-			weights[node["id"]] += weights[k]
-	else:
-		weights[node["id"]] = 0
-		return weights
-	return weights
-
-# sentences2emptyConllFile("infile.txt", "outfile.txt")
-#
-#
-# # trees = conllFile2trees("outfile.txt")
-# # trees2conllFile(trees, "outffile.txt")
-#
-# trees = conllFile2trees("/home/marine/Dropbox/TAL/PhD/Naija/Corpus_CoNLL/D_ABJ_GWA_05_D_Tailoring_TRANS.eaf.csv")
-# with open("/home/marine/naija2.txt", "w") as outf:
-# 	for t in trees:
-# 		outf.write(" ".join([w for w in t.words if w not in ["|a","}}","]//","&//","//]","<+","|r", ")", "(","|c","[", "&","//=",">+" ,"?//", "]", "//", "||", "|", "<", ">", "//+", "}", "{","|", "!//"]])+"\n")
-# 	# outf.write(t.sentence)

@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 import networkx as nx
 
 # local
-import conll3
+# import conll3
 
 
 class DependencyTree(object):
@@ -179,7 +179,7 @@ def build_random_forest(specs):
 			t = DependencyTree(size)
 			tree = t.toTree()
 			trees += [tree]
-	returns trees
+	return trees
 
 
 

@@ -531,6 +531,53 @@ around their governor node.</p>
 </table>
 </dd></dl>
 
+<span class="target" id="module-scripts.dlm"></span><p>This script is used to generate dependency trees which are optimal in terms of Dependency Length Minimization</p>
+<dl class="function">
+<dt id="scripts.dlm.get_weight_kids">
+<code class="descclassname">scripts.dlm.</code><code class="descname">get_weight_kids</code><span class="sig-paren">(</span><em>tree</em>, <em>node</em>, <em>weights</em><span class="sig-paren">)</span><a class="headerlink" href="#scripts.dlm.get_weight_kids" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the weight (i.e the number of direct and indirect dependents) for each node.</p>
+<p>Recursive function called inside optimal_linearization.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>tree</strong> (<em>Tree</em>) – a dependency Tree in dict format</li>
+<li><strong>node</strong> (<em>dict</em>) – the dict corresponding to the current root node</li>
+<li><strong>weights</strong> (<em>dict</em>) – the dict updated with each node’s weight</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>weights</strong> – the dict updated with each node’s weight</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">dict</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="scripts.dlm.optimal_linearization">
+<code class="descclassname">scripts.dlm.</code><code class="descname">optimal_linearization</code><span class="sig-paren">(</span><em>tree</em><span class="sig-paren">)</span><a class="headerlink" href="#scripts.dlm.optimal_linearization" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reorders the nodes to minimize Dependency Length.</p>
+<p>The resulting relinearized tree will be one of the possible trees
+that minimize dependency length without altering the structure.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>tree</strong> (<em>Tree</em>) – the original dependency Tree in dict format</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>linearization</strong> – the new sequence of nodes that minimizes Dependency Length</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">list</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 <div class="toctree-wrapper compound">
 </div>
 </div>

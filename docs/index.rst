@@ -8,6 +8,9 @@ Welcome to Alearbres's documentation!
 .. automodule:: scripts.random_linearisation
     :members:
 
+.. automodule:: scripts.dlm
+    :members:
+
 .. toctree::
    :maxdepth: 2
    :caption: Contents:

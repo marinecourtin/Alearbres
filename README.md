@@ -134,7 +134,7 @@ Which gives us the nice tree below :
 
 You can also of course use it on random trees to generate trees such as this one:
 
-![img](./docs/_static/opti-tree2.png)
+![img](./docs/_static/opti-tree2.svg)
 
 
 

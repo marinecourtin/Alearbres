@@ -125,31 +125,30 @@ if __name__ == "__main__":
 # 8	bien	bien	_	_	_	3	advmod	_	_
 # """
 
-	conll = """1	le	le	_	_	_	0	root	_	_
-2	petit	petit	_	_	_	1	amod	_	_
+	conll = """1	le	le	_	_	_	3	det	_	_
+2	petit	petit	_	_	_	3	amod	_	_
 3	chat	chat	_	_	_	4	subj	_	_
-4	dort	dort	_	_	_	2	root	_	_
-5	très	très	_	_	_	4	advmod	_	_
+4	dort	dort	_	_	_	0	root	_	_
+5	très	très	_	_	_	6	advmod	_	_
 6	bien	bien	_	_	_	4	advmod	_	_
-7	bien	bien	_	_	_	5	advmod	_	_
 """
 	# store the dependency tree in a dict
-	# tree = conll3.conll2tree(conll)
+	tree = conll3.conll2tree(conll)
 
 	# # # find the optimal sequence of nodes
-	# linearization = optimal_linearization(tree)
+	linearization = optimal_linearization(tree)
 	# # print(linearization)
 
 	# # rewrite the conll according to the new linearisation
-	# new_tree = random_linearisation.rewrite_tree(tree, linearization)
+	new_tree = random_linearisation.rewrite_tree(tree, linearization)
 	# # print(new_tree.conllu())
 	# # write the tree(s) to a file
-	# conll3.trees2conllFile([new_tree], "sample-dlmtree.conllu")
+	conll3.trees2conllFile([new_tree], "sample-dlmtree.conllu")
 
-	new_trees = list()
-	trees = conll3.conllFile2trees("sample_random-forest.conllu")
-	for t in trees:
-		l = optimal_linearization(t)
-		n_t = random_linearisation.rewrite_tree(t, l)
-		new_trees += [n_t]
-	conll3.trees2conllFile(new_trees, "../sample_optimal-forest.conllu")
+	# new_trees = list()
+	# trees = conll3.conllFile2trees("sample_random-forest.conllu")
+	# for t in trees:
+	# 	l = optimal_linearization(t)
+	# 	n_t = random_linearisation.rewrite_tree(t, l)
+	# 	new_trees += [n_t]
+	# conll3.trees2conllFile(new_trees, "../sample_optimal-forest.conllu")

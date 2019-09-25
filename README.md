@@ -92,7 +92,10 @@ conll = """1	le	le	_	_	_	3	det	_	_
 6       petit   petit   _       _       _       5       amod    _       _
 ```
 
-Note that this method only generate projective edges.
+
+# There's some weird trees I would really like to generate but Alearbres does not cover them...
+
+Great ! We're always interested in expanding the types of constraints that can be added during the generation process. If is some specific constraint that you would be interested in, please submit a feature-request and we will look into it.
 
 # Get the source
 

@@ -6,11 +6,6 @@ This script is used to manipulate dependency trees stored in conllu format
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-
-#
-# version of the script for python 3 : Marine Courtin
-#
-
 ####
 # Copyright (C) 2009-2017 Kim Gerdes
 # kim AT gerdes. fr

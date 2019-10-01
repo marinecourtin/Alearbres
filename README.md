@@ -21,7 +21,7 @@ Main script : *random_structure.py*
 # create a random tree with 5 nodes
 >>> t = DependencyTree(5)
 Tree
-  Edges: [(1, 0), (2, 0), (3, 0), (4, 3)]
+	Edges: [(1, 0), (2, 1), (3, 0), (4, 2)]
 ```
 
 
@@ -85,7 +85,7 @@ r_nonproj = >>> create_random_nonpj_linearisation(tree) # non-projective
 
 Which once translated into graphical format gives :
 
-![img](./docs/_static/rand-proj-ln.png)
+![img](./docs/_static/rand-lin.png)
 
 ```python
 # write the trees to a conll file
@@ -113,28 +113,28 @@ conll = """1	le	le	_	_	_	3	det	_	_
 # find the optimal sequence of nodes
 >>> linearization = optimal_linearization(tree)
 >>> print(linearization)
-[6, 5, 1, 4, 3, 2]
-
+[1,3,2,4,6,5]
+	
 # rewrite the conll according to the new linearisation
 >>> new_tree = random_linearisation.rewrite_tree(tree, linearization)
 	
 # see the conll
 >>> print(new_tree.conllu())
-1       bien    bien    _       _       _       4       advmod  _       _
-2       très    très    _       _       _       1       advmod  _       _
-3       le      le      _       _       _       5       det     _       _
-4       dort    dort    _       _       _       0       root    _       _
-5       chat    chat    _       _       _       4       subj    _       _
-6       petit   petit   _       _       _       5       amod    _       _
+1	le	le	_	_	_	2	det	_	_
+2	chat	chat	_	_	_	4	subj	_	_
+3	petit	petit	_	_	_	2	amod	_	_
+4	dort	dort	_	_	_	0	root	_	_
+5	bien	bien	_	_	_	4	advmod	_	_
+6	très	très	_	_	_	5	advmod	_	_
 ```
 
 Which gives us the nice tree below :
 
-![img](./docs/_static/opti-tree.png)
+![img](./docs/_static/opti-tree3.png)
 
 You can also of course use it on random trees to generate trees such as this one:
 
-![img](./docs/_static/opti-tree2.svg)
+![img](./docs/_static/random-opti.png)
 
 
 
